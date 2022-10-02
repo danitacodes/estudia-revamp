@@ -5,6 +5,7 @@ import MainScreen from "../../components/MainScreen";
 import '../Signin/SigninScreen'
 import ErrorMessage from "../../components/ErrorMessage";
 import Loading from '../../components/Loading';
+import axios from "axios";
 
 const Signup = () => {
 
@@ -13,24 +14,45 @@ const Signup = () => {
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState(null);
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
 
         if(password!== confirmpassword) {
-            setMessage('Passwords do not match')
+          setMessage('Passwords do not match')
         }
         else {
+          setMessage(null)
+          try {
+            const config = {
+              headers: {
+                'Content-type': 'application/json',
+              },
+            };
 
+            setLoading(true);
+
+            const { data } = await axios.post('http://localhost:5000/api/users/signup',
+            { username, email, password },
+            config
+            );
+
+            setLoading(false);
+            localStorage.setItem('userInfo', JSON.stringify(data))
+          } catch (error) {
+            setError(error.response.data.message)
+          }
         }
     }
 
   return (
     <MainScreen title="SIGNUP">
       <div className="signinContainer">
-        {/* {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
+        {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
         {message && <ErrorMessage variant='danger'>{message}</ErrorMessage>}
-        {loading && <Loading />} */}
+        {loading && <Loading />}
         <Form onSubmit={submitHandler}>
           <Form.Group className="mb-3" controlId="formBasicName">
             <Form.Control

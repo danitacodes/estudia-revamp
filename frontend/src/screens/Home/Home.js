@@ -5,15 +5,15 @@ import "./Home.css"
 
 const Home = () => {
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    useEffect(() => {
-        const userInfo = localStorage.getItem('userInfo')
-        if (userInfo) {
-          navigate('/studylist');
-        }
+    // useEffect(() => {
+    //     const userInfo = localStorage.getItem('userInfo')
+    //     if (userInfo) {
+    //       navigate('/studylist');
+    //     }
         
-      }, [userInfo])
+    //   }, [userInfo])
 
   return (
     <div className='main'>
