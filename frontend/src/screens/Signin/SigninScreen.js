@@ -1,49 +1,34 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import ErrorMessage from "../../components/ErrorMessage";
 import Loading from '../../components/Loading';
 import { Button, Form, Row, Col } from "react-bootstrap";
 import "../Signin/SigninScreen.css";
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import MainScreen from "../../components/MainScreen";
-import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { signin } from '../../actions/userActions'
 
 const Signin = () => {
 
+    const navigate = useNavigate();
     const [username, setUsername] = useState ('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(false);
-    const [loading, setLoading] = useState(false);
 
+    const dispatch  = useDispatch();
+
+    const userLogin = useSelector((state) => state.userLogin);
+    const { loading, error, userInfo } = userLogin;
+
+    useEffect(() => {
+      if (userInfo) {
+        navigate('/studypage')
+      }
+    }, [userInfo])
 
     const submitHandler = async (e) => {
         e.preventDefault();
-
-        try {
-          const config ={
-            headers: {
-              "Content-type": "application/json"
-            },
-          }
-
-          setLoading(true)
-
-          const { data } = await axios.post('http://localhost:5000/api/users/signin',
-          {
-            email, 
-            password,
-          },
-          config
-        );
-        
-        console.log(data)
-        localStorage.setItem('userInfo', JSON.stringify(data))
-        setLoading(false);
-
-        } catch (error) {
-          setError(error.response.data.message)
-          setLoading(false)
-        }
+        dispatch(signin(username, email, password))
     }
 
   return (

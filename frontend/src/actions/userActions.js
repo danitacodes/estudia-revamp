@@ -1,141 +1,88 @@
 import {
-    CREATE_STUDY_REQUEST,
-    CREATE_STUDY_FAIL,
-    CREATE_STUDY_SUCCESS,
-    FETCH_STUDY_REQUEST,
-    FETCH_STUDY_FAIL,
-    FETCH_STUDY_SUCCESS,
-    STUDY_UPDATE_REQUEST,
-    STUDY_UPDATE_SUCCESS,
-    STUDY_UPDATE_FAIL,
-    DELETE_STUDY_SUCCESS,
-    DELETE_STUDY_REQUEST,
-    DELETE_STUDY_FAIL,
+    USER_LOGIN_FAIL,
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_LOGOUT_SUCCESS,
+    USER_REGISTER_FAIL,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_UPDATE_REQUEST,
+    USER_UPDATE_SUCCESS,
+    USER_UPDATE_FAIL,
   } from "./actionTypes";
-  import axios from "axios";
-  
-  export const listStudy = () => async (dispatch, getState) => {
+  import axios from 'axios'
+    
+
+  export const signin = (username, email, password) => async (dispatch) => {
     try {
-      dispatch({
-        type: FETCH_STUDY_REQUEST,
-      });
-  
-      const {
-        userLogin: { userInfo },
-      } = getState();
+      dispatch({ type: USER_LOGIN_REQUEST });
   
       const config = {
         headers: {
-          Authorization: `Bearer ${userInfo.token}`,
+          "Content-Type": "application/json",
         },
       };
   
-      const { data } = await axios.get(
-        `https://localhost:5000/api/study`,
+      const { data } = await axios.post(
+        "api/v1/users/signin",
+        { username, email, password },
         config
       );
   
-      dispatch({
-        type: FETCH_STUDY_SUCCESS,
-        payload: data,
-      });
+      dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+  
+      localStorage.setItem("userInfo", JSON.stringify(data));
     } catch (error) {
-      const message =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message;
       dispatch({
-        type: FETCH_STUDY_FAIL,
-        payload: message,
+        type: USER_LOGIN_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
       });
     }
   };
   
-  export const createStudyAction =
-    (assignment, minutes, subject, notes) => async (dispatch, getState) => {
-      try {
-        dispatch({
-          type: CREATE_STUDY_REQUEST,
-        });
+  export const logout = () => async (dispatch) => {
+    localStorage.removeItem("userInfo");
+    dispatch({ type: USER_LOGOUT_SUCCESS });
+  };
   
-        const {
-          userLogin: { userInfo },
-        } = getState();
-  
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        };
-  
-        const { data } = await axios.post(
-          `https://studyhabit.herokuapp.com/api/study/create`,
-          { assignment, minutes, subject, notes },
-          config
-        );
-  
-        dispatch({
-          type: CREATE_STUDY_SUCCESS,
-          payload: data,
-        });
-      } catch (error) {
-        const message =
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message;
-        dispatch({
-          type: CREATE_STUDY_FAIL,
-          payload: message,
-        });
-      }
-    };
-  
-  export const updateStudyAction =
-    (id, assignment, minutes, subject, notes) => async (dispatch, getState) => {
-      try {
-        dispatch({
-          type: STUDY_UPDATE_REQUEST,
-        });
-  
-        const {
-          userLogin: { userInfo },
-        } = getState();
-  
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        };
-  
-        const { data } = await axios.put(
-          `https://studyhabit.herokuapp.com/api/study/${id}`,
-          { assignment, minutes, subject, notes },
-          config
-        );
-  
-        dispatch({
-          type: STUDY_UPDATE_SUCCESS,
-          payload: data,
-        });
-      } catch (error) {
-        const message =
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message;
-        dispatch({
-          type: STUDY_UPDATE_FAIL,
-          payload: message,
-        });
-      }
-    };
-  
-  export const deleteStudyAction = (id) => async (dispatch, getState) => {
+  export const register = (username, email, password) => async (dispatch) => {
     try {
+      dispatch({ type: USER_REGISTER_REQUEST });
+  
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+  
+      const { data } = await axios.post(
+        "/api/v1/users/signup",
+        { username, email, password },
+        config
+      );
+  
+      dispatch({ type: USER_REGISTER_SUCCESS, payload: data });
+  
+      dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+  
+      localStorage.setItem("userInfo", JSON.stringify(data));
+    } catch (error) {
       dispatch({
-        type: DELETE_STUDY_REQUEST,
+        type: USER_REGISTER_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
       });
+    }
+  };
+  
+  export const update = (user) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_UPDATE_REQUEST });
   
       const {
         userLogin: { userInfo },
@@ -143,27 +90,29 @@ import {
   
       const config = {
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
   
-      const { data } = await axios.delete(
-        `https://studyhabit.herokuapp.com/api/study/${id}`,
+      const { data } = await axios.post(
+        "/api/v1/users/profile",
+        user,
         config
       );
   
-      dispatch({
-        type: DELETE_STUDY_SUCCESS,
-        payload: data,
-      });
+      dispatch({ type: USER_UPDATE_SUCCESS, payload: data });
+  
+      dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+  
+      localStorage.setItem("userInfo", JSON.stringify(data));
     } catch (error) {
-      const message =
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message;
       dispatch({
-        type: DELETE_STUDY_FAIL,
-        payload: message,
+        type: USER_UPDATE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
       });
     }
   };

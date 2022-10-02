@@ -1,49 +1,42 @@
-import React, {useState} from "react";
-import { Link } from 'react-router-dom';
+import React, {useEffect, useState} from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import MainScreen from "../../components/MainScreen";
 import '../Signin/SigninScreen'
 import ErrorMessage from "../../components/ErrorMessage";
 import Loading from '../../components/Loading';
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { register } from "../../actions/userActions";
 
 const Signup = () => {
 
+
+    const navigate = useNavigate();  
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState(null);
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
 
-    const submitHandler = async (e) => {
+    const dispatch = useDispatch();
+
+    const userRegister = useSelector((state) => state.userRegister);
+    const { loading, error, userInfo } = userRegister;
+
+    useEffect(() => {
+      if (userInfo) {
+        navigate('/studypage');
+      }
+    }, [userInfo])
+
+    const submitHandler = (e) => {
         e.preventDefault();
 
         if(password!== confirmpassword) {
           setMessage('Passwords do not match')
         }
         else {
-          setMessage(null)
-          try {
-            const config = {
-              headers: {
-                'Content-type': 'application/json',
-              },
-            };
-
-            setLoading(true);
-
-            const { data } = await axios.post('http://localhost:5000/api/users/signup',
-            { username, email, password },
-            config
-            );
-
-            setLoading(false);
-            localStorage.setItem('userInfo', JSON.stringify(data))
-          } catch (error) {
-            setError(error.response.data.message)
-          }
+          dispatch(register(username, email, password))
         }
     }
 

@@ -1,19 +1,25 @@
-import React, {useEffect} from 'react'
+import React, {useEffect } from 'react'
 import { Container, Row, Button } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import "./Home.css"
 
 const Home = () => {
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const userInfo = localStorage.getItem('userInfo')
-    //     if (userInfo) {
-    //       navigate('/studylist');
-    //     }
+    const userLogin = useSelector((state) => state.userLogin);
+    const {userInfo} = userLogin;
+
+    useEffect(() => {
+        const userInfo = localStorage.getItem('userInfo')
+        if (userInfo) {
+          navigate('/studylist');
+        }
         
-    //   }, [userInfo])
+      }, [userInfo])
+
+
 
   return (
     <div className='main'>
@@ -30,16 +36,16 @@ const Home = () => {
                                     Signin
                                 </Button>
                             </a>
-                            <a href='signup'>
+                            <a href='/signup'>
                                 <Button size='md' className='homebutton'>
                                     Signup
                                 </Button>
                             </a>
-                            <a href='demo'>
-                                <Button size='md' className='homebutton'>
+                            {/* <a href='/demo'>
+                                <Button size='md' className='homebutton' onClick={loggedIn}>
                                     Demo
                                 </Button>
-                            </a>
+                            </a> */}
                         </div>
                     </div>
                 </Row>

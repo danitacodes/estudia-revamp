@@ -7,7 +7,10 @@ import Home from './screens/Home/Home';
 import StudyPage from './screens/Study/StudyPage';
 import StudyList from './screens/Study/StudyList';
 import Signin from './screens/Signin/SigninScreen';
-import Signup from './screens/Signup/Signup'
+import Signup from './screens/Signup/Signup';
+import EditStudy from './screens/Edit/editstudy';
+import Profile from './screens/Profile/ProfileScreen'
+
 
 function App() {
   return (
@@ -18,8 +21,10 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/signin' element={<Signin />} />
+          <Route path='/profile' element={<Profile />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/studypage' element={<StudyPage />} />
+          <Route path='/study/:id' element={<EditStudy />} />
           <Route path='/studylist' element={<StudyList />} />
         </Routes>
       </main>
