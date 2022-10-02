@@ -1,0 +1,60 @@
+.main {
+    min-height: 93vh;
+    display: flex;
+    align-items: center;
+    background-image: url('../../assets/studytracker1.png');
+    background-position: center;
+    background-size: cover;
+}
+
+.title {
+    font-size: 90px;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+/* .subtitle {
+    font-size: 25px;
+    padding-top: 10px;
+} */
+
+.intro-text {
+    width: 100%;
+    text-align: center;
+}
+
+.buttonContainer {
+    margin-top: 75px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.homebutton {
+    width: 200px;
+    height: 55px;
+}
+
+@media only screen and (min-width: 320px) {
+    .title {
+        font-size: 30px;
+        padding: 0px;
+    }
+
+    .homebutton {
+        width: 100px;
+        height: 50px;
+        justify-content: space-evenly;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .title {
+        font-size: 50px;
+    }
+   
+    .buttonContainer {
+        margin-top: 75px;
+        display: flex;
+        justify-content: space-evenly;
+    }
+}
